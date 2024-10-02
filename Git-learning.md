@@ -1,6 +1,6 @@
 # Git 基础配置
 
-![image-20240822115539384](C:\Users\33071\AppData\Roaming\Typora\typora-user-images\image-20240822115539384.png)
+![image-20240822115539384](C:\Users\33071\AppData\Roaming\Typora\typora-user-images\image-20240822115539384.png)（需要修改）
 
 * 
   创建一个本地版本库
