@@ -1,3 +1,7 @@
+> 教程资源
+>
+> [lec2 - 2023春夏实用技能拾遗](https://slides.tonycrane.cc/PracticalSkillsTutorial/2023-spring-cs/lec2/#/3/4)
+
 # Git 基础配置
 
 ![image-20240822115539384](C:\Users\33071\AppData\Roaming\Typora\typora-user-images\image-20240822115539384.png)（需要修改）
