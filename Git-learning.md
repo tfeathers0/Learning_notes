@@ -126,3 +126,34 @@
   - e.g. v1.0.0-beta < v1.0.0-rc.1 < v1.0.0 < v1.0.1
 
 > git diff A B(分别对应ab, a用- ,b用+,最好设置A为旧文件,B为新文件)
+
+# detached HEAD 问题
+
+* HEAD：通常指向**当前（工作区）所在的分支**。
+  * 例如，当你在 `main` 分支时，`HEAD` 指向 `main` 分支，而 `main` 分支又指向最新的提交。
+* detached HEAD: HEAD指向某个历史提交，而不是某个分支
+* 什么情形会出现detached HEAD
+  - git checkout *id*，此后的修改不会出现在任何分支
+  - 切换回 master 后会出现一条不属于任何分支的提交（相当于修改会丢失）
+
+![img](./Img/git-detached.png)
+
+- 如何解决：在 F 的位置上 git checkout -b *branch* 创建并检出新分支
+
+# 分支
+
+![img](./Img/model-branch.png)
+
+- 创建分支
+  - git branch *name*：基于当前 HEAD
+  - git branch *name* *id*：基于 *id* 提交:warning:
+- 查看分支
+  - git branch（带 -a 显示远程分支）
+  - git show-branch 更详细
+- 切换分支
+  - git checkout *name*
+  - git checkout -b *name*：创建并切换
+- 内容比较
+  - git diff *branch1* *branch2*：比较两个分支
+  - git diff *branch*：比较工作区和分支
+  - git diff：比较工作区和暂存区
