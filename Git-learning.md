@@ -2,6 +2,8 @@
 >
 > [lec2 - 2023春夏实用技能拾遗](https://slides.tonycrane.cc/PracticalSkillsTutorial/2023-spring-cs/lec2/#/3/4)
 
+[toc]
+
 # Git 基础配置
 
 ![image-20240822115539384](C:\Users\33071\AppData\Roaming\Typora\typora-user-images\image-20240822115539384.png)（需要修改）
@@ -157,3 +159,123 @@
   - git diff *branch1* *branch2*：比较两个分支
   - git diff *branch*：比较工作区和分支
   - git diff：比较工作区和暂存区
+  
+- 如何更方便地定位提交
+  
+  - 什么是分支名：和 HEAD 一样，也是一个指针（实际上叫引用 ref）
+  - 可以基于 ref  使用 ~  或 ^  定位父提交
+    - ~ 表示第一个父提交，~2 表示第一个父提交的第一个父提交
+    - ^ 表示第一个父提交，^2 表示第二个父提交
+  - 一个提交可能会有多个父提交（merge commit）
+  
+  ![img](./Img/git-relativeref.png)
+
+# 合并
+
+- 将多个分支的更改都合并到当前分支：git merge *branch1* *branch2*...
+
+* 几种 merge 的情况
+
+  - 当前分支只比被合并分支多提交：already up-to-date
+
+  - 被合并分支只比当前分支多提交：fast-forward（将 HEAD 指向被合并分支）
+
+  - 都有新的提交：产生一个merge commit
+    - 有冲突需要手动解决冲突（add 后再次 commit 生成 merge commit）
+
+![img](./Img/git-merge1.png)
+
+* 实际上 merge 操作一般都在 GitHub 上通过 PR 完成，两种特殊的 merge 方法：
+
+  - squash merge：将目的分支多出的所有提交压缩为一个新提交并入当前分支
+
+  - rebase：变基
+    - 命令行直接rebase 会将当前分支接到目标分支后
+      - 这种情况会导致提交历史更改，同步会有冲突，合作时不推荐
+    - 通过 GitHub PR rebase merge 会将目标分支接到当前分支后
+
+![img](./Img/git-merge2.png)
+
+# 修改提交历史
+
+- git 的提交历史也并不是完全不可修改的，有几种方式可以进行强制修改
+- ❗️如果项目已经公开，且有其他人协作，那就不应该修改任何提交历史
+
+几种修改的方式
+
+1. 不算是修改的修改：git revert id:warning:
+
+   - 生成一个新的提交，将目标提交的更改撤销
+   - 历史的所有提交都不会改变
+
+2. 修改最新提交的提交信息：git commit --amend
+
+   - 会弹出编辑器编辑提交信息（或直接用 -m "*message*" 指定）
+   - 只会修改最新提交的提交信息
+   - 本质上修改了提交历史记录，不建议在协作时使用
+
+3. 回到之前某一提交的状态：git reset id
+
+   - 几种模式：
+     - --soft：只修改 HEAD 指针，不修改暂存区和工作区
+     - --mixed：修改 HEAD 指针和暂存区，不修改工作区（默认）
+     - --hard：修改 HEAD 指针、暂存区和工作区（完全回退）
+
+   ![img](./Img/git-changelog.png)
+
+4. rebase：:warning:
+
+   - 前面说到的 rebase merge 是在不同分支之间变基的情况
+   - rebase 也可以用在同一分支上，表现为修改提交历史
+   - git rebase -i id：交互式rebase
+     - 会弹出编辑器，可以对提交进行编辑，顺序从上到下
+     - pick：保留该提交
+     - edit：保留该提交，但会进入编辑状态
+     - squash：将该提交和上一个提交合并
+     - drop/ 删除整行：删除该提交
+
+   ![img](./Img/git-rebase.png)
+
+# 远程版本库
+
+- 想一想 Git 这样的分布式 VCS 如何实现协作
+
+- 使用一个远程的“权威”版本库（remote repository）
+
+- 远程版本库也是一个普通的git 版本库
+
+  - 通过git clone src dest 可以将远程版本库克隆到本地
+
+    - 会自动建立 remote 关联，可通过 git remote 管理
+
+  - git remote add origin `https://github.com/你的用户名/仓库名.git`
+
+    - origin：远程仓库名，即地址别名
+
+  - git push 
+
+    会将本地的提交推送到远程版本库
+  
+    - 无法直接 push 到远程版本库检出的分支中
+    - 因此远程一般使用裸版本库（--bare）
+
+  - git pull 
+
+    会将远程版本库的提交拉取到本地
+  
+    - 包含 git fetch 和 git merge 两个步骤
+
+![img](./Img/model-remote.png)
+
+# 如何理解远程版本库
+
+- 可以当作本地的一个 origin/master 分支
+  - \* 后面会提到，实际上是在另一个命名空间 remotes 中
+- 多的功能只有 fetch 更新这个分支，以及 push 推送到远程
+
+![img](./Img/git-remote.png)
+
+最后，如何让合作的人都能访问到远程版本库？
+
+- 放在服务器上通过 SSH/HTTPS/Git 原生协议等访问
+- 更方便的，放在 GitHub/GitLab 等托管网站上
