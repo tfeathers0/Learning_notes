@@ -103,3 +103,11 @@
   - **启动 Nano**：终端输入 `nano 文件名`（按 `Ctrl+O` 保存，`Ctrl+X` 退出）。
 
   两者都是 Linux/Unix 系统的常见工具，根据需求灵活选用即可！
+
+
+
+
+
+`git remote remove`
+
+`git remote add git@github.com:tfeathers0/wxapp.git`
